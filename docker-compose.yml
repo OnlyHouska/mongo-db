@@ -65,6 +65,23 @@ services:
     networks:
       - library_network
 
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: library_mongo_express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_URL: mongodb://admin:secret@mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - library_network
+
 volumes:
   mongo_data:
 
