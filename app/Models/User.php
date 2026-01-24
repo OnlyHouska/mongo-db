@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use MongoDB\Laravel\Auth\User as Authenticatable;
+use MongoDB\Laravel\Relations\HasMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -20,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
+        'class',
     ];
 
     protected $hidden = [
@@ -34,6 +36,21 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'reader_id');
+    }
+
+    public function activeLoans(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'reader_id')->whereNull('returned_at');
+    }
+
+    public function hasOverdueLoans(): bool
+    {
+        return $this->activeLoans()->where('due_date', '<', now())->exists();
     }
 
     public function getJWTIdentifier(): mixed

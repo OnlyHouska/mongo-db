@@ -37,7 +37,7 @@ class Loan extends Model
 
     public function reader(): BelongsTo
     {
-        return $this->belongsTo(Reader::class, 'reader_id');
+        return $this->belongsTo(User::class, 'reader_id');
     }
 
     public function isActive(): bool

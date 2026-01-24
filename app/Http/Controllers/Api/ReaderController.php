@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reader\StoreReaderRequest;
 use App\Http\Requests\Reader\UpdateReaderRequest;
-use App\Models\Reader;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class ReaderController extends Controller
             ], 403);
         }
 
-        $query = Reader::query();
+        $query = User::where('role', UserRole::READER->value);
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -52,7 +53,13 @@ class ReaderController extends Controller
 
     public function store(StoreReaderRequest $request): JsonResponse
     {
-        $reader = Reader::create($request->validated());
+        $reader = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => 'password', // Default password, user should reset it
+            'role' => UserRole::READER,
+            'class' => $request->class,
+        ]);
 
         return response()->json([
             'message' => 'Ctenar byl uspesne vytvoren',
@@ -70,7 +77,7 @@ class ReaderController extends Controller
             ], 403);
         }
 
-        $reader = Reader::with('activeLoans.book')->findOrFail($id);
+        $reader = User::with('activeLoans.book')->findOrFail($id);
 
         return response()->json([
             'reader' => $reader,
@@ -79,7 +86,7 @@ class ReaderController extends Controller
 
     public function update(UpdateReaderRequest $request, string $id): JsonResponse
     {
-        $reader = Reader::findOrFail($id);
+        $reader = User::findOrFail($id);
         $reader->update($request->validated());
 
         return response()->json([
@@ -98,7 +105,7 @@ class ReaderController extends Controller
             ], 403);
         }
 
-        $reader = Reader::findOrFail($id);
+        $reader = User::findOrFail($id);
 
         if ($reader->activeLoans()->count() > 0) {
             return response()->json([

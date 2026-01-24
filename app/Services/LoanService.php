@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Book;
 use App\Models\Loan;
-use App\Models\Reader;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 
@@ -13,15 +13,15 @@ class LoanService
     public function borrowBook(string $bookId, string $readerId, ?Carbon $dueDate = null): Loan
     {
         $book = Book::findOrFail($bookId);
-        $reader = Reader::findOrFail($readerId);
+        $reader = User::findOrFail($readerId);
 
         if (!$book->isAvailable()) {
             throw new Exception('Kniha neni dostupna - vsechny kopie jsou vypujceny');
         }
 
         $loan = Loan::create([
-            'book_id' => $book->_id,
-            'reader_id' => $reader->_id,
+            'book_id' => $book->id,
+            'reader_id' => $reader->id,
             'borrowed_at' => now(),
             'due_date' => $dueDate ?? now()->addDays(14),
             'returned_at' => null,

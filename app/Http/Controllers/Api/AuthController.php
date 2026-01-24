@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\Reader;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -19,12 +18,6 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'role' => UserRole::READER,
-        ]);
-
-        // Create corresponding Reader record for borrowing books
-        Reader::create([
-            'name' => $request->name,
-            'email' => $request->email,
             'class' => 'Nezařazeno',
         ]);
 

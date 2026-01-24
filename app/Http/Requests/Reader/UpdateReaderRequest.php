@@ -19,7 +19,7 @@ class UpdateReaderRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'min:2', 'max:255'],
             'class' => ['sometimes', 'required', 'string', 'max:50'],
-            'email' => ['sometimes', 'required', 'email', Rule::unique('readers', 'email')->ignore($readerId)],
+            'email' => ['sometimes', 'required', 'email', Rule::unique('users', 'email')->ignore($readerId)],
         ];
     }
 

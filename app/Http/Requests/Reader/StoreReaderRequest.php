@@ -16,7 +16,7 @@ class StoreReaderRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'class' => ['required', 'string', 'max:50'],
-            'email' => ['required', 'email', 'unique:readers,email'],
+            'email' => ['required', 'email', 'unique:users,email'],
         ];
     }
 
