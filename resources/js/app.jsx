@@ -92,7 +92,7 @@ function AppRoutes() {
             <Route
                 path="/my-loans"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRoles={['reader']}>
                         <Layout>
                             <MyLoansPage />
                         </Layout>
